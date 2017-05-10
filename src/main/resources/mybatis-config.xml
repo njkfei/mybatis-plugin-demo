@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <properties>
+        <property name="dialect" value="mysql" />
+    </properties>
+    <settings>
+        <setting name="logImpl" value="LOG4J2" />
+        <setting name="mapUnderscoreToCamelCase" value="true" />
+        <setting name="useGeneratedKeys" value="true"/>
+    </settings>
+
+    <!-- mybatis-config.xml -->
+    <plugins>
+        <!--<plugin interceptor="mybais.plugin.demo.MyBatisSQLInterceptor"></plugin>-->
+        <plugin interceptor="mybais.plugin.demo.ShardingInterceptor">
+            <!-- 必须以xxStrategy结尾 -->
+            <property name="defaultStrategy" value="mybais.plugin.demo.DefaultShardStrategy"/>
+            <property name="inboxShardStrategy" value="mybais.plugin.demo.InboxShardStrategy"/>
+            <!---->
+            <!--prepay_bill_detail_index|defaultStrategy,-->
+            <!--prepay_bill_detail_content,-->
+            <!--prepay_bill_sheet_fee-->
+             <!---->
+            <!-- 表名|路由策略 -->
+            <!-- 策略必须继承 com.strategy.ShardStrategy -->
+            <!-- 如果不指定Strategy则使用默认的策略 -->
+            <!-- 使用了路由策略表对应的Dao method 必须包含参数-->
+            <!--@Param("_shardParam")@NotNull ShardParam shardParam-->
+                <!--参见： void insert(-->
+                        <!--@Param("detailIndex")PrepayBillDetailIndex billDetail,-->
+                        <!--@Param("_shardParam")@NotNull ShardParam shardParam);-->
+            <!---->
+            <property name="tableNames"
+                      value="t|inboxShardStrategy"
+            />
+        </plugin>
+    </plugins>
+
+</configuration>
